@@ -35,7 +35,6 @@ class Enemy:
 
         self.alive = True
 
-        self.texture = arcade.make_soft_square_texture(64, arcade.color.RED, 255, 255)
 
     def apply_knockback(self, from_x: float, from_y: float, force: float):
         dx = self.x - from_x
@@ -129,6 +128,7 @@ class Enemy:
 
     def draw(self):
         size = self.radius * 2
+        self.texture = arcade.make_soft_square_texture(64, self._color(), 255, 255)
         arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.x, self.y, size, size))
         arcade.draw_text(self._class_name(), self.x, self.y + self.radius + 10, arcade.color.WHITE, 12, anchor_x="center", anchor_y="center")
         self._draw_hp_bar()
