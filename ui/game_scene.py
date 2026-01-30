@@ -3,7 +3,11 @@ import random
 from pathlib import Path
 
 import arcade
-from arcade.camera import Camera
+
+try:
+    from arcade.camera import Camera2D as Camera
+except ImportError:  # Arcade 2.6
+    from arcade import Camera
 
 from entities.enemy import Enemy
 from entities.player import Player
@@ -11,7 +15,7 @@ from systems.collision_system import circle_circle, resolve_soft_push
 from systems.math_utils import Vector2
 from systems.particle_system import ParticleSystem
 from systems.wave_spawner import WaveSpawner
-from ui.base_scene import BaseScene
+from ui.game_over_scene import GameOverView
 
 LEVELS_PATH = Path("data/levels.json")
 TILE_SIZE = 32
@@ -23,11 +27,11 @@ SFX_PATHS = {
 MUSIC_PATH = Path("assets/music.ogg")
 
 
-class GameScene(BaseScene):
-    def __init__(self, window, settings, score_system):
+class GameView(arcade.View):
+    def __init__(self, window):
         super().__init__(window)
-        self.settings = settings
-        self.score_system = score_system
+        self.settings = window.settings
+        self.score_system = window.score_system
         self.camera = Camera(window.width, window.height)
         self.gui_camera = Camera(window.width, window.height)
         self.levels = []
@@ -77,14 +81,14 @@ class GameScene(BaseScene):
             return
         sound.play(volume=volume)
 
-    def on_show(self, **kwargs):
-        self.level_index = kwargs.get("level_index", 0)
+    def on_show_view(self):
+        self.level_index = 0
         self.score = 0
         self.start_level(self.level_index)
         arcade.set_background_color(arcade.color.DARK_SAND)
         self.play_music()
 
-    def on_hide(self):
+    def on_hide_view(self):
         if self.music:
             self.music.stop()
 
@@ -102,7 +106,7 @@ class GameScene(BaseScene):
         self.wave_spawner = WaveSpawner(self.level_config, self.arena_bounds)
         self.contact_damage_timer = 0
 
-    def update(self, delta_time):
+    def on_update(self, delta_time):
         move_vector = Vector2(0, 0)
         if arcade.key.W in self.move_keys or arcade.key.UP in self.move_keys:
             move_vector.y += 1
@@ -200,7 +204,7 @@ class GameScene(BaseScene):
     def check_win_loss(self):
         if self.player.hp <= 0:
             self.score_system.submit(self.score)
-            self.manager.show("game_over", score=self.score, victory=False)
+            self.window.show_view(GameOverView(self.window, score=self.score, victory=False))
             return
         if self.wave_spawner and self.wave_spawner.wave_complete() and not self.enemies:
             if self.level_index + 1 < len(self.levels):
@@ -208,9 +212,9 @@ class GameScene(BaseScene):
                 self.start_level(self.level_index)
             else:
                 self.score_system.submit(self.score)
-                self.manager.show("game_over", score=self.score, victory=True)
+                self.window.show_view(GameOverView(self.window, score=self.score, victory=True))
 
-    def draw(self):
+    def on_draw(self):
         self.window.clear()
         self.camera.use()
         self.draw_arena()

@@ -1,24 +1,21 @@
 import arcade
 
-from ui.base_scene import BaseScene
-from ui.menu_scene import Button
+from ui.widgets import Button
 
 
-class GameOverScene(BaseScene):
-    def __init__(self, window, score_system):
+class GameOverView(arcade.View):
+    def __init__(self, window, score, victory):
         super().__init__(window)
-        self.score_system = score_system
-        self.score = 0
-        self.victory = False
+        self.score_system = window.score_system
+        self.score = score
+        self.victory = victory
         self.replay_button = Button("Replay", window.width / 2, window.height / 2 - 20)
         self.menu_button = Button("Menu", window.width / 2, window.height / 2 - 80)
 
-    def on_show(self, **kwargs):
-        self.score = kwargs.get("score", 0)
-        self.victory = kwargs.get("victory", False)
+    def on_show_view(self):
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
 
-    def draw(self):
+    def on_draw(self):
         self.window.clear()
         title = "Victory!" if self.victory else "Game Over"
         arcade.draw_text(title, self.window.width / 2, self.window.height - 140, arcade.color.WHITE, 32, anchor_x="center")
@@ -47,6 +44,10 @@ class GameOverScene(BaseScene):
 
     def on_mouse_press(self, x, y, button, modifiers):
         if self.replay_button.hit_test(x, y):
-            self.manager.show("game")
+            from ui.game_scene import GameView
+
+            self.window.show_view(GameView(self.window))
         elif self.menu_button.hit_test(x, y):
-            self.manager.show("menu")
+            from ui.menu_scene import MenuView
+
+            self.window.show_view(MenuView(self.window))

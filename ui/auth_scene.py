@@ -1,21 +1,20 @@
 import arcade
 
-from ui.base_scene import BaseScene
+from ui.menu_scene import MenuView
 
 
-class AuthScene(BaseScene):
-    def __init__(self, window, user_db):
+class AuthView(arcade.View):
+    def __init__(self, window):
         super().__init__(window)
-        self.user_db = user_db
         self.username = ""
         self.message = "Введите логин и нажмите Enter"
 
-    def on_show(self, **kwargs):
+    def on_show_view(self):
         self.username = ""
         self.message = "Введите логин и нажмите Enter"
         arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-    def draw(self):
+    def on_draw(self):
         self.window.clear()
         arcade.draw_text(
             "Авторизация",
@@ -59,17 +58,17 @@ class AuthScene(BaseScene):
     def on_key_press(self, key, modifiers):
         if key == arcade.key.ENTER:
             try:
-                self.user_db.ensure_user(self.username)
+                self.window.user_db.ensure_user(self.username)
             except ValueError:
                 self.message = "Логин не может быть пустым"
                 return
-            self.manager.show("menu")
+            self.window.current_user = self.username
+            self.window.show_view(MenuView(self.window))
             return
         if key == arcade.key.BACKSPACE:
             self.username = self.username[:-1]
             return
-        if key in (arcade.key.ESCAPE, arcade.key.TAB):
-            return
-        char = chr(key) if 32 <= key <= 126 else ""
-        if char:
-            self.username += char
+
+    def on_text(self, text):
+        if text.isprintable():
+            self.username += text
