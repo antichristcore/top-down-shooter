@@ -1,1 +1,5 @@
-print(123)
+from core.game import run
+
+
+if __name__ == "__main__":
+    run()
