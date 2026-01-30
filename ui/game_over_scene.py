@@ -19,7 +19,7 @@ class GameOverScene(BaseScene):
         arcade.set_background_color(arcade.color.DARK_SLATE_GRAY)
 
     def draw(self):
-        arcade.start_render()
+        self.window.clear()
         title = "Victory!" if self.victory else "Game Over"
         arcade.draw_text(title, self.window.width / 2, self.window.height - 140, arcade.color.WHITE, 32, anchor_x="center")
         arcade.draw_text(

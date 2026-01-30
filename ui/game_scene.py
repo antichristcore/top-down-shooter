@@ -208,7 +208,7 @@ class GameScene(BaseScene):
                 self.manager.show("game_over", score=self.score, victory=True)
 
     def draw(self):
-        arcade.start_render()
+        self.window.clear()
         self.camera.use()
         self.draw_arena()
         self.player.draw()

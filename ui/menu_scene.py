@@ -72,7 +72,7 @@ class MenuScene(BaseScene):
         arcade.set_background_color(arcade.color.DARK_MIDNIGHT_BLUE)
 
     def draw(self):
-        arcade.start_render()
+        self.window.clear()
         arcade.draw_text(
             "Top-Down Shooter",
             self.window.width / 2,
