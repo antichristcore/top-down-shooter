@@ -129,7 +129,10 @@ class GameScene(BaseScene):
         max_y = self.arena_bounds[3] - self.window.height
         target_x = max(0, min(target_x, max_x))
         target_y = max(0, min(target_y, max_y))
-        self.camera.move_to((target_x, target_y), 0.15)
+        if hasattr(self.camera, "move_to"):
+            self.camera.move_to((target_x, target_y), 0.15)
+        else:
+            self.camera.position = (target_x, target_y)
 
     def spawn_waves(self, delta_time):
         if not self.wave_spawner:
