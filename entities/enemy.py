@@ -4,11 +4,12 @@ from entities.projectile import Projectile
 
 class Enemy:
     __slots__ = (
-        "enemy_type","x","y","radius","speed","hp","mass",
+        "enemy_type","x","y","radius","speed","hp","max_hp","mass",
         "shoot_interval","_shoot_timer",
         "dash_cooldown","dash_time","_dash_cd","_dash_t",
         "knock_vx","knock_vy",
-        "alive"
+        "alive",
+        "texture"
     )
 
     def __init__(self, enemy_type, x, y, radius, speed, hp, mass=1.5):
@@ -18,6 +19,7 @@ class Enemy:
         self.radius = radius
         self.speed = speed
         self.hp = hp
+        self.max_hp = hp
         self.mass = mass
 
         self.shoot_interval = 1.0
@@ -32,6 +34,8 @@ class Enemy:
         self.knock_vy = 0.0
 
         self.alive = True
+
+        self.texture = arcade.make_soft_square_texture(64, arcade.color.RED, 255, 255)
 
     def apply_knockback(self, from_x: float, from_y: float, force: float):
         dx = self.x - from_x
@@ -101,6 +105,30 @@ class Enemy:
             "tank": arcade.color.DARK_RED
         }.get(self.enemy_type, arcade.color.RED)
 
+    def _class_name(self):
+        return {
+            "melee": "Боец",
+            "shooter": "Стрелок",
+            "charger": "Рывок",
+            "tank": "Танк"
+        }.get(self.enemy_type, self.enemy_type)
+
+    def _draw_hp_bar(self):
+        bar_width = self.radius * 2
+        bar_height = 6
+        bar_x = self.x - bar_width / 2
+        bar_y = self.y - self.radius - 12
+        arcade.draw_lrbt_rectangle_filled(
+            bar_x, bar_x + bar_width, bar_y, bar_y + bar_height, arcade.color.DIM_GRAY
+        )
+        if self.max_hp > 0:
+            fill_width = bar_width * max(0.0, min(1.0, self.hp / self.max_hp))
+            arcade.draw_lrbt_rectangle_filled(
+                bar_x, bar_x + fill_width, bar_y, bar_y + bar_height, arcade.color.GREEN
+            )
+
     def draw(self):
-        arcade.draw_circle_filled(self.x, self.y, self.radius, self._color())
-        arcade.draw_text(f"{self.hp}", self.x - 10, self.y - 8, arcade.color.WHITE, 12)
+        size = self.radius * 2
+        arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.x, self.y, size, size))
+        arcade.draw_text(self._class_name(), self.x, self.y + self.radius + 10, arcade.color.WHITE, 12, anchor_x="center", anchor_y="center")
+        self._draw_hp_bar()

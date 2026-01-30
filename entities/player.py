@@ -4,9 +4,10 @@ from entities.projectile import Projectile
 
 class Player:
     __slots__ = (
-        "x","y","radius","speed","hp","mass",
+        "x","y","radius","speed","hp","max_hp","mass",
         "up","down","left","right",
-        "shoot_cooldown","_shoot_timer"
+        "shoot_cooldown","_shoot_timer",
+        "texture"
     )
 
     def __init__(self, x, y, radius, speed, hp, mass=1.0):
@@ -15,11 +16,14 @@ class Player:
         self.radius = radius
         self.speed = speed
         self.hp = hp
+        self.max_hp = hp
         self.mass = mass
 
         self.up = self.down = self.left = self.right = False
         self.shoot_cooldown = 0.12
         self._shoot_timer = 0.0
+
+        self.texture = arcade.make_soft_square_texture(64, arcade.color.BLUE_SAPPHIRE, 255, 255)
 
     def update(self, dt: float, walls, collision_circle_rect_fn):
         self._shoot_timer = max(0.0, self._shoot_timer - dt)
@@ -62,6 +66,22 @@ class Player:
             bullet_radius, bullet_damage, bullet_knockback
         )
 
+    def _draw_hp_bar(self):
+        bar_width = self.radius * 2
+        bar_height = 6
+        bar_x = self.x - bar_width / 2
+        bar_y = self.y - self.radius - 12
+        arcade.draw_lrbt_rectangle_filled(
+            bar_x, bar_x + bar_width, bar_y, bar_y + bar_height, arcade.color.DIM_GRAY
+        )
+        if self.max_hp > 0:
+            fill_width = bar_width * max(0.0, min(1.0, self.hp / self.max_hp))
+            arcade.draw_lrbt_rectangle_filled(
+                bar_x, bar_x + fill_width,  bar_y, bar_y + bar_height, arcade.color.GREEN
+            )
+
     def draw(self):
-        arcade.draw_circle_filled(self.x, self.y, self.radius, arcade.color.AZURE)
-        arcade.draw_text(f"{self.hp}", self.x - 10, self.y - 8, arcade.color.BLACK, 12)
+        size = self.radius * 2
+        arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.x, self.y, size, size))
+        arcade.draw_text("Игрок", self.x, self.y + self.radius + 10, arcade.color.WHITE, 12, anchor_x="center", anchor_y="center")
+        self._draw_hp_bar()
