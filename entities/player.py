@@ -7,7 +7,7 @@ class Player:
         "x","y","radius","speed","hp","max_hp","mass",
         "up","down","left","right",
         "shoot_cooldown","_shoot_timer",
-        "sprite"
+        "texture"
     )
 
     def __init__(self, x, y, radius, speed, hp, mass=1.0):
@@ -23,10 +23,7 @@ class Player:
         self.shoot_cooldown = 0.12
         self._shoot_timer = 0.0
 
-        texture = arcade.make_soft_square_texture(64, arcade.color.BLUE_SAPPHIRE, 255, 255)
-        self.sprite = arcade.Sprite()
-        self.sprite.texture = texture
-        self.sprite.scale = (self.radius * 2) / texture.width
+        self.texture = arcade.make_soft_square_texture(64, arcade.color.BLUE_SAPPHIRE, 255, 255)
 
     def update(self, dt: float, walls, collision_circle_rect_fn):
         self._shoot_timer = max(0.0, self._shoot_timer - dt)
@@ -84,8 +81,7 @@ class Player:
             )
 
     def draw(self):
-        self.sprite.center_x = self.x
-        self.sprite.center_y = self.y
-        self.sprite.draw()
+        size = self.radius * 2
+        arcade.draw_texture_rectangle(self.x, self.y, size, size, self.texture)
         arcade.draw_text("Игрок", self.x, self.y + self.radius + 10, arcade.color.WHITE, 12, anchor_x="center", anchor_y="center")
         self._draw_hp_bar()

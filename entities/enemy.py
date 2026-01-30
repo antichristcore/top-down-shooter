@@ -9,7 +9,7 @@ class Enemy:
         "dash_cooldown","dash_time","_dash_cd","_dash_t",
         "knock_vx","knock_vy",
         "alive",
-        "sprite"
+        "texture"
     )
 
     def __init__(self, enemy_type, x, y, radius, speed, hp, mass=1.5):
@@ -35,10 +35,7 @@ class Enemy:
 
         self.alive = True
 
-        texture = arcade.make_soft_square_texture(64, arcade.color.RED, 255, 255)
-        self.sprite = arcade.Sprite()
-        self.sprite.texture = texture
-        self.sprite.scale = (self.radius * 2) / texture.width
+        self.texture = arcade.make_soft_square_texture(64, arcade.color.RED, 255, 255)
 
     def apply_knockback(self, from_x: float, from_y: float, force: float):
         dx = self.x - from_x
@@ -131,9 +128,7 @@ class Enemy:
             )
 
     def draw(self):
-        self.sprite.center_x = self.x
-        self.sprite.center_y = self.y
-        self.sprite.color = self._color()
-        self.sprite.draw()
+        size = self.radius * 2
+        arcade.draw_texture_rectangle(self.x, self.y, size, size, self.texture, tint=self._color())
         arcade.draw_text(self._class_name(), self.x, self.y + self.radius + 10, arcade.color.WHITE, 12, anchor_x="center", anchor_y="center")
         self._draw_hp_bar()
