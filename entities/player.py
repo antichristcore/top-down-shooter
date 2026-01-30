@@ -71,17 +71,17 @@ class Player:
         bar_height = 6
         bar_x = self.x - bar_width / 2
         bar_y = self.y - self.radius - 12
-        arcade.draw_lrtb_rectangle_filled(
-            bar_x, bar_x + bar_width, bar_y + bar_height, bar_y, arcade.color.DIM_GRAY
+        arcade.draw_lrbt_rectangle_filled(
+            bar_x, bar_x + bar_width, bar_y, bar_y + bar_height, arcade.color.DIM_GRAY
         )
         if self.max_hp > 0:
             fill_width = bar_width * max(0.0, min(1.0, self.hp / self.max_hp))
-            arcade.draw_lrtb_rectangle_filled(
-                bar_x, bar_x + fill_width, bar_y + bar_height, bar_y, arcade.color.GREEN
+            arcade.draw_lrbt_rectangle_filled(
+                bar_x, bar_x + fill_width,  bar_y, bar_y + bar_height, arcade.color.GREEN
             )
 
     def draw(self):
         size = self.radius * 2
-        arcade.draw_texture_rectangle(self.x, self.y, size, size, self.texture)
+        arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.x, self.y, size, size))
         arcade.draw_text("Игрок", self.x, self.y + self.radius + 10, arcade.color.WHITE, 12, anchor_x="center", anchor_y="center")
         self._draw_hp_bar()
