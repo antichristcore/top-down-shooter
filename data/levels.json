@@ -1,0 +1,47 @@
+[
+  {
+    "id": "level_1",
+    "name": "Песчаная арена",
+    "arenaWidth": 30,
+    "arenaHeight": 20,
+    "waves": 3,
+    "spawnIntervalSeconds": 4.0,
+    "enemyTypes": ["melee", "shooter"],
+    "enemyStats": {
+      "melee": { "hp": 30, "speed": 150 },
+      "shooter": { "hp": 20, "speed": 120 }
+    },
+    "winCondition": "kill_all_after_waves"
+  },
+  {
+    "id": "level_2",
+    "name": "Лабиринт",
+    "arenaWidth": 40,
+    "arenaHeight": 25,
+    "waves": 4,
+    "spawnIntervalSeconds": 3.0,
+    "enemyTypes": ["melee", "shooter", "charger"],
+    "enemyStats": {
+      "melee": { "hp": 35, "speed": 160 },
+      "shooter": { "hp": 25, "speed": 130 },
+      "charger": { "hp": 40, "speed": 200 }
+    },
+    "winCondition": "kill_all_after_waves"
+  },
+  {
+    "id": "level_3",
+    "name": "Кольцевая арена",
+    "arenaWidth": 50,
+    "arenaHeight": 30,
+    "waves": 5,
+    "spawnIntervalSeconds": 2.5,
+    "enemyTypes": ["melee", "shooter", "charger", "tank"],
+    "enemyStats": {
+      "melee": { "hp": 40, "speed": 170 },
+      "shooter": { "hp": 30, "speed": 140 },
+      "charger": { "hp": 55, "speed": 220 },
+      "tank": { "hp": 120, "speed": 80 }
+    },
+    "winCondition": "kill_all_after_waves"
+  }
+]
