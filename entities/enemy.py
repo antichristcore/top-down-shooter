@@ -1,17 +1,19 @@
 import arcade
+
 from entities.projectile import Projectile
+from systems.math_utils import Vector2
 
 
 class Enemy:
     def __init__(self, enemy_type, position, stats):
         self.enemy_type = enemy_type
-        self.position = arcade.Vector(position[0], position[1])
+        self.position = Vector2(position[0], position[1])
         self.radius = 14 if enemy_type != "tank" else 20
         self.speed = stats.get("speed", 100)
         self.max_hp = stats.get("hp", 3)
         self.hp = self.max_hp
         self.mass = stats.get("mass", 1.0)
-        self.velocity = arcade.Vector(0, 0)
+        self.velocity = Vector2(0, 0)
         self.attack_timer = 0
         self.shoot_timer = 0
         self.attack_interval = 1.2 if enemy_type == "shooter" else 0.5
@@ -35,9 +37,9 @@ class Enemy:
         self.hit_flash_timer = 0.12
 
     def update(self, delta_time, player_position, arena_bounds):
-        to_player = arcade.Vector(player_position.x - self.position.x, player_position.y - self.position.y)
+        to_player = Vector2(player_position.x - self.position.x, player_position.y - self.position.y)
         distance = to_player.length
-        move_dir = to_player.normalize() if distance > 1 else arcade.Vector(0, 0)
+        move_dir = to_player.normalize() if distance > 1 else Vector2(0, 0)
         speed = self.speed
         if self.enemy_type == "charger":
             self.charge_timer -= delta_time
@@ -66,7 +68,7 @@ class Enemy:
         if self.shoot_timer > 0:
             return None
         self.shoot_timer = self.attack_interval
-        direction = arcade.Vector(player_position.x - self.position.x, player_position.y - self.position.y)
+        direction = Vector2(player_position.x - self.position.x, player_position.y - self.position.y)
         if direction.length == 0:
             return None
         velocity = direction.normalize() * 280

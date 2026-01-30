@@ -1,10 +1,12 @@
 import arcade
 
+from systems.math_utils import Vector2
+
 
 class Projectile:
     def __init__(self, position, velocity, damage, radius, owner, knockback=80):
-        self.position = arcade.Vector(position[0], position[1])
-        self.velocity = arcade.Vector(velocity[0], velocity[1])
+        self.position = Vector2(position[0], position[1])
+        self.velocity = Vector2(velocity[0], velocity[1])
         self.damage = damage
         self.radius = radius
         self.owner = owner

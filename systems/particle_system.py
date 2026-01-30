@@ -2,11 +2,13 @@ import math
 import random
 import arcade
 
+from systems.math_utils import Vector2
+
 
 class Particle:
     def __init__(self, position, velocity, color, ttl, radius):
-        self.position = arcade.Vector(position[0], position[1])
-        self.velocity = arcade.Vector(velocity[0], velocity[1])
+        self.position = Vector2(position[0], position[1])
+        self.velocity = Vector2(velocity[0], velocity[1])
         self.color = color
         self.ttl = ttl
         self.radius = radius

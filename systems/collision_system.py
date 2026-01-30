@@ -1,4 +1,4 @@
-import arcade
+from systems.math_utils import Vector2
 
 
 def circle_circle(pos_a, radius_a, pos_b, radius_b):
@@ -17,10 +17,10 @@ def resolve_soft_push(pos_a, radius_a, pos_b, radius_b):
     delta = pos_a - pos_b
     dist = delta.length
     if dist == 0:
-        return arcade.Vector(0, 0), arcade.Vector(0, 0)
+        return Vector2(0, 0), Vector2(0, 0)
     overlap = radius_a + radius_b - dist
     if overlap <= 0:
-        return arcade.Vector(0, 0), arcade.Vector(0, 0)
+        return Vector2(0, 0), Vector2(0, 0)
     push_dir = delta.normalize()
     push = push_dir * (overlap * 0.5)
     return push, -push

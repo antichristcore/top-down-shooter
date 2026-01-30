@@ -8,6 +8,7 @@ from arcade.camera import Camera
 from entities.enemy import Enemy
 from entities.player import Player
 from systems.collision_system import circle_circle, resolve_soft_push
+from systems.math_utils import Vector2
 from systems.particle_system import ParticleSystem
 from systems.wave_spawner import WaveSpawner
 from ui.base_scene import BaseScene
@@ -42,7 +43,7 @@ class GameScene(BaseScene):
         self.score = 0
         self.move_keys = set()
         self.contact_damage_timer = 0
-        self.mouse_world = arcade.Vector(0, 0)
+        self.mouse_world = Vector2(0, 0)
         self.sfx = {}
         self.music = None
         self.load_levels()
@@ -102,7 +103,7 @@ class GameScene(BaseScene):
         self.contact_damage_timer = 0
 
     def update(self, delta_time):
-        move_vector = arcade.Vector(0, 0)
+        move_vector = Vector2(0, 0)
         if arcade.key.W in self.move_keys or arcade.key.UP in self.move_keys:
             move_vector.y += 1
         if arcade.key.S in self.move_keys or arcade.key.DOWN in self.move_keys:
@@ -280,7 +281,7 @@ class GameScene(BaseScene):
                 self.play_sfx("shot")
 
     def on_mouse_motion(self, x, y, dx, dy):
-        self.mouse_world = arcade.Vector(*self.camera.screen_to_world((x, y)))
+        self.mouse_world = Vector2(*self.camera.screen_to_world((x, y)))
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         self.on_mouse_motion(x, y, dx, dy)
