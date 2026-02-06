@@ -35,7 +35,7 @@ class LevelSelectScene(arcade.View):
         self.anchor = gui.UIAnchorLayout()
         vbox = gui.UIBoxLayout(space_between=10)
 
-        vbox.add(gui.UILabel(text="SELECT LEVEL", font_size=34, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text="Выберите уровень", font_size=34, text_color=arcade.color.WHITE))
 
         def go_back():
             self.scene_manager.go("menu")
@@ -43,7 +43,7 @@ class LevelSelectScene(arcade.View):
         def start_campaign():
             self.window.start_campaign()
 
-        vbox.add(CallbackButton("Play All (Campaign)", 420, start_campaign))
+        vbox.add(CallbackButton("Кампания", 420, start_campaign))
         vbox.add(gui.UISpace(height=6))
 
         for i, lvl in enumerate(self.levels):
@@ -57,7 +57,7 @@ class LevelSelectScene(arcade.View):
             vbox.add(CallbackButton(name, 420, make_cb(i)))
 
         vbox.add(gui.UISpace(height=8))
-        vbox.add(CallbackButton("Back", 260, go_back))
+        vbox.add(CallbackButton("Вернуться назад", 260, go_back))
 
         self.anchor.add(vbox, anchor_x="center_x", anchor_y="center_y")
         self.ui.add(self.anchor)

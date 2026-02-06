@@ -2,7 +2,7 @@ import os
 import arcade
 from systems.db_system import DBSystem
 
-ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "assets")
+ASSETS_DIR = os.path.join(os.path.dirname(__file__), "..", "data")
 
 class AudioSystem:
     def __init__(self, db: DBSystem, username: str):
@@ -23,9 +23,9 @@ class AudioSystem:
             path = os.path.join(ASSETS_DIR, name)
             return arcade.load_sound(path) if os.path.exists(path) else None
 
-        self.music_sound = load_sound("music.ogg")
-        self.sfx_shot = load_sound("shot.wav")
-        self.sfx_hit = load_sound("hit.wav")
+        self.music_sound = load_sound("music.mp3")
+        self.sfx_shot = load_sound("shot.mp3")
+        self.sfx_hit = load_sound("hit.mp3")
         self.sfx_explosion = load_sound("explosion.wav")
 
     def _effective_music_volume(self) -> float:
@@ -39,7 +39,7 @@ class AudioSystem:
             return
         if self.music_player and self.music_player.playing:
             return
-        self.music_player = arcade.play_sound(self.music_sound, volume=self._effective_music_volume(), looping=True)
+        self.music_player = arcade.play_sound(self.music_sound, volume=self._effective_music_volume())
 
     def stop_music(self):
         try:

@@ -674,7 +674,7 @@ class GameScene(arcade.View):
                 p.draw()
 
         arcade.draw_text("HP: " + str(self.player.hp), 20, self.window.height - 40, arcade.color.WHITE, 18)
-        arcade.draw_text("Score: " + str(self.score.score), 20, self.window.height - 70, arcade.color.WHITE, 18)
+        arcade.draw_text("Результат: " + str(self.score.score), 20, self.window.height - 70, arcade.color.WHITE, 18)
 
         if len(self.enemies) > 0:
             shown_wave = self.waves_spawned
@@ -682,12 +682,12 @@ class GameScene(arcade.View):
             shown_wave = min(self.waves_spawned + 1, self.waves_total)
 
         arcade.draw_text(
-            "Wave: " + str(shown_wave) + "/" + str(self.waves_total),
+            "Волна: " + str(shown_wave) + "/" + str(self.waves_total),
             20, self.window.height - 100, arcade.color.WHITE, 14
         )
 
         arcade.draw_text(
-            "Level: " + str(self.level_cfg.get("name", "")),
+            "Уровень: " + str(self.level_cfg.get("name", "")),
             20, self.window.height - 125, arcade.color.WHITE, 14
         )
 

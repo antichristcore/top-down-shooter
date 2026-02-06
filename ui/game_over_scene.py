@@ -30,14 +30,14 @@ class GameOverScene(arcade.View):
         self.anchor = gui.UIAnchorLayout()
         vbox = gui.UIBoxLayout(space_between=10)
 
-        title = "VICTORY!" if self.victory else "GAME OVER"
+        title = "ПОБЕДА!" if self.victory else "GAME OVER"
         vbox.add(gui.UILabel(text=title, font_size=44, text_color=arcade.color.WHITE))
 
-        vbox.add(gui.UILabel(text=f"Score: {self.score}", font_size=20, text_color=arcade.color.WHITE))
-        vbox.add(gui.UILabel(text=f"Best:  {self.best_score}", font_size=20, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text=f"Результат: {self.score}", font_size=20, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text=f"Лучший результат:  {self.best_score}", font_size=20, text_color=arcade.color.WHITE))
 
         vbox.add(gui.UISpace(height=8))
-        vbox.add(gui.UILabel(text="RESULTS", font_size=26, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text="РЕЗУЛЬТАТЫ", font_size=26, text_color=arcade.color.WHITE))
 
         time_s = float(self.results.get("time_seconds", 0.0))
         waves_spawned = int(self.results.get("waves_spawned", 0))
@@ -59,13 +59,13 @@ class GameOverScene(arcade.View):
         ss = int(time_s % 60)
         time_str = f"{mm:02d}:{ss:02d}"
 
-        vbox.add(gui.UILabel(text=f"Time: {time_str}", font_size=16, text_color=arcade.color.WHITE))
-        vbox.add(gui.UILabel(text=f"Waves: {waves_spawned}/{waves_total}", font_size=16, text_color=arcade.color.WHITE))
-        vbox.add(gui.UILabel(text=f"Kills: {kills_total}", font_size=16, text_color=arcade.color.WHITE))
-        vbox.add(gui.UILabel(text=f"Shots: {shots}   Hits: {hits}   Acc: {accuracy:.1f}%", font_size=16, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text=f"Время: {time_str}", font_size=16, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text=f"Волны: {waves_spawned}/{waves_total}", font_size=16, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text=f"Убийства: {kills_total}", font_size=16, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text=f"Выстрелов: {shots}   Попаданий: {hits}   Точность: {accuracy:.1f}%", font_size=16, text_color=arcade.color.WHITE))
 
         if len(kills_by_type) > 0:
-            order = ["melee", "shooter", "charger", "tank"]
+            order = ["Боец", "Стрелок", "Заряд", "Танк"]
             parts = []
             for k in order:
                 if k in kills_by_type:
@@ -74,7 +74,7 @@ class GameOverScene(arcade.View):
                 if k not in order:
                     parts.append(f"{k}:{int(kills_by_type.get(k, 0))}")
 
-            vbox.add(gui.UILabel(text="By type: " + "  ".join(parts), font_size=14, text_color=arcade.color.WHITE))
+            vbox.add(gui.UILabel(text="Убийств по типу " + "  ".join(parts), font_size=14, text_color=arcade.color.WHITE))
 
         vbox.add(gui.UISpace(height=10))
 
@@ -87,9 +87,9 @@ class GameOverScene(arcade.View):
         def go_menu():
             self.scene_manager.go("menu")
 
-        vbox.add(CallbackButton("Replay", 260, replay))
-        vbox.add(CallbackButton("Level Select", 260, go_level_select))
-        vbox.add(CallbackButton("Menu", 260, go_menu))
+        vbox.add(CallbackButton("Повторить", 260, replay))
+        vbox.add(CallbackButton("Выбор уровня", 260, go_level_select))
+        vbox.add(CallbackButton("Меню", 260, go_menu))
 
         self.anchor.add(vbox, anchor_x="center_x", anchor_y="center_y")
         self.ui.add(self.anchor)

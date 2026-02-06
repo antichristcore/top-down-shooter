@@ -40,10 +40,10 @@ class MenuScene(arcade.View):
         def do_exit():
             arcade.close_window()
 
-        vbox.add(CallbackButton("Play", 260, go_level_select))
-        vbox.add(CallbackButton("Exit", 260, do_exit))
+        vbox.add(CallbackButton("Играть", 260, go_level_select))
+        vbox.add(CallbackButton("Выход", 260, do_exit))
 
-        vbox.add(gui.UILabel(text="Music", font_size=16, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text="Музыка", font_size=16, text_color=arcade.color.WHITE))
         self.music_slider = gui.UISlider(
             value=float(self.audio.music_volume),
             min_value=0.0,
@@ -52,7 +52,7 @@ class MenuScene(arcade.View):
         )
         vbox.add(self.music_slider)
 
-        vbox.add(gui.UILabel(text="SFX", font_size=16, text_color=arcade.color.WHITE))
+        vbox.add(gui.UILabel(text="Эффекты", font_size=16, text_color=arcade.color.WHITE))
         self.sfx_slider = gui.UISlider(
             value=float(self.audio.sfx_volume),
             min_value=0.0,
@@ -66,7 +66,7 @@ class MenuScene(arcade.View):
             self.mute_button.text = "Mute: ON" if self.audio.muted else "Mute: OFF"
 
         self.mute_button = CallbackButton(
-            "Mute: ON" if self.audio.muted else "Mute: OFF",
+            "Мут: ON" if self.audio.muted else "Мут: OFF",
             260,
             toggle_mute
         )
