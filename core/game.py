@@ -33,10 +33,11 @@ class Game(arcade.Window):
         self.audio = AudioSystem(self.db, self.username)
         self.audio.load_assets()
 
-        # выбранный уровень
+        # выбор уровня / режимы
         self.selected_level_index = 0
+        self.campaign_mode = False  # ✅ новый режим "все карты подряд"
 
-        # результаты для экрана GameOver/Results
+        # результаты для экрана Results
         self._pending_game_over_score = 0
         self._pending_game_over_best = 0
         self._pending_game_over_victory = False
@@ -66,7 +67,14 @@ class Game(arcade.Window):
         )
 
     def start_game_with_level(self, level_index: int):
+        self.campaign_mode = False
         self.selected_level_index = int(level_index)
+        self.scene_manager.go("game")
+
+    def start_campaign(self):
+        # ✅ пройти все уровни подряд
+        self.campaign_mode = True
+        self.selected_level_index = 0
         self.scene_manager.go("game")
 
     def open_game_over(self, score: int, best_score: int, victory: bool, results: dict):
