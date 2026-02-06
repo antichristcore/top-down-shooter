@@ -60,7 +60,6 @@ class GameScene(arcade.View):
         self.enemy_projectiles = []
         self.particles = []
 
-        # Waves
         self.waves_total = int(self.level_cfg.get("waves", 3))
         self.spawn_interval = float(self.level_cfg.get("spawnIntervalSeconds", 3.0))
         self.enemy_types = list(self.level_cfg.get("enemyTypes", ["melee"]))
@@ -73,18 +72,15 @@ class GameScene(arcade.View):
 
         self.score = ScoreSystem()
 
-        # Maze metadata
         self.maze_is_active = False
         self.maze_floor_points = []
 
-        # Ring metadata
         self.ring_is_active = False
         self._ring_cx = 0.0
         self._ring_cy = 0.0
         self._ring_w = 0.0
         self._ring_h = 0.0
 
-        # Results stats
         self.time_seconds = 0.0
         self.shots_fired = 0
         self.shots_hit = 0
@@ -107,9 +103,6 @@ class GameScene(arcade.View):
         with open(LEVELS_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
 
-    # ------------------------------------------------------------
-    # Screen -> World (aim fix)
-    # ------------------------------------------------------------
 
     def _screen_to_world(self, sx: float, sy: float):
         try:
@@ -130,18 +123,10 @@ class GameScene(arcade.View):
         wy = (sy - self.window.height / 2) / zoom + cy
         return wx, wy
 
-    # ------------------------------------------------------------
-    # Anti-push into walls (NEW)
-    # ------------------------------------------------------------
 
     def _push_circle_out_of_walls(self, x: float, y: float, r: float, walls):
-        """
-        Итеративно выталкиваем круг из AABB-стен.
-        Возвращает (x, y, moved: bool)
-        """
         moved_any = False
 
-        # несколько итераций, чтобы вытащить из углов/пересечений
         for _ in range(8):
             moved_this_iter = False
 
@@ -154,7 +139,6 @@ class GameScene(arcade.View):
                 b = w.bottom()
                 t = w.top()
 
-                # ближайшая точка прямоугольника к центру круга
                 px = min(max(x, l), rr)
                 py = min(max(y, b), t)
 
@@ -173,14 +157,11 @@ class GameScene(arcade.View):
                         moved_this_iter = True
                         moved_any = True
                 else:
-                    # Центр внутри прямоугольника или ровно на ребре -> толкаем по минимальной оси
-                    # считаем "как далеко до каждой стороны"
                     left_pen = (x - l)
                     right_pen = (rr - x)
                     bottom_pen = (y - b)
                     top_pen = (t - y)
 
-                    # выберем ближайшую сторону и вытолкнем наружу на r
                     m = min(left_pen, right_pen, bottom_pen, top_pen)
 
                     if m == left_pen:
@@ -201,11 +182,6 @@ class GameScene(arcade.View):
         return x, y, moved_any
 
     def _player_post_physics_fix(self, prev_x: float, prev_y: float):
-        """
-        После раздвижений врагами:
-        1) пытаемся вытолкнуть игрока из стен
-        2) если всё равно коллизит — откатываем на prev и тоже выталкиваем (на всякий)
-        """
         x, y, _ = self._push_circle_out_of_walls(self.player.x, self.player.y, self.player.radius, self.walls)
         self.player.x = x
         self.player.y = y
@@ -217,9 +193,6 @@ class GameScene(arcade.View):
             self.player.x = x2
             self.player.y = y2
 
-    # ------------------------------------------------------------
-    # Fixed maze
-    # ------------------------------------------------------------
 
     def _fixed_maze_map(self):
         return [
@@ -284,9 +257,7 @@ class GameScene(arcade.View):
         self.maze_floor_points = floors
         return walls
 
-    # ------------------------------------------------------------
-    # Player placement
-    # ------------------------------------------------------------
+
 
     def _place_player_safe(self):
         if self.maze_is_active and self.maze_floor_points:
@@ -314,9 +285,6 @@ class GameScene(arcade.View):
         self.player.x = self.arena_w_px / 2
         self.player.y = self.arena_h_px / 2
 
-    # ------------------------------------------------------------
-    # Walls
-    # ------------------------------------------------------------
 
     def _build_walls_for_level(self):
         walls = []
@@ -366,9 +334,6 @@ class GameScene(arcade.View):
 
         return walls
 
-    # ------------------------------------------------------------
-    # FX
-    # ------------------------------------------------------------
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.DARK_OLIVE_GREEN)
@@ -400,9 +365,6 @@ class GameScene(arcade.View):
                 color=arcade.color.YELLOW_ORANGE
             ))
 
-    # ------------------------------------------------------------
-    # Spawn helpers
-    # ------------------------------------------------------------
 
     def _pick_spawn_in_maze(self, min_dist_from_player: float):
         if not self.maze_floor_points:
@@ -492,9 +454,6 @@ class GameScene(arcade.View):
 
             self.enemies.append(e)
 
-    # ------------------------------------------------------------
-    # Waves update: next wave only after clear
-    # ------------------------------------------------------------
 
     def _update_waves(self, dt: float):
         if len(self.enemies) > 0:
@@ -519,7 +478,6 @@ class GameScene(arcade.View):
                 self._waiting_next_wave = False
                 self._just_cleared = False
 
-    # ------------------------------------------------------------
 
     def _clamp_camera(self):
         half_w = self.window.width / 2
@@ -561,7 +519,6 @@ class GameScene(arcade.View):
         best = self.db.try_set_best_score(self.username, self.score.score)
         self.window.open_game_over(self.score.score, best, victory, self._collect_results())
 
-    # ------------------------------------------------------------
 
     def on_update(self, dt: float):
         self.time_seconds += dt
@@ -577,7 +534,6 @@ class GameScene(arcade.View):
 
         self._update_waves(dt)
 
-        # движение игрока (коллизии со стенами тут уже есть)
         self.player.update(dt, self.walls, circle_aabb_hit)
 
         # стрелять
@@ -599,11 +555,9 @@ class GameScene(arcade.View):
             if ep is not None:
                 self.enemy_projectiles.append(ep)
 
-        # ---------- FIX: сохраняем прошлую позицию игрока перед "толканиями"
         prev_px = float(self.player.x)
         prev_py = float(self.player.y)
 
-        # игрок-враг (мягкое раздвижение)
         for e in self.enemies:
             if circle_circle_hit(self.player.x, self.player.y, self.player.radius, e.x, e.y, e.radius):
                 ax, ay, bx, by = soft_separate_circles(
@@ -612,7 +566,6 @@ class GameScene(arcade.View):
                 )
                 self.player.x, self.player.y, e.x, e.y = ax, ay, bx, by
 
-        # враг-враг (мягкое раздвижение)
         n = len(self.enemies)
         for i in range(n):
             a = self.enemies[i]
@@ -622,7 +575,6 @@ class GameScene(arcade.View):
                     ax, ay, bx, by = soft_separate_circles(a.x, a.y, a.radius, b.x, b.y, b.radius)
                     a.x, a.y, b.x, b.y = ax, ay, bx, by
 
-        # ✅ главное: не даём врагам затолкать игрока в стену
         self._player_post_physics_fix(prev_px, prev_py)
 
         # контактный урон
