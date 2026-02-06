@@ -19,7 +19,6 @@ class AudioSystem:
         self.music_volume, self.sfx_volume, self.muted = self.db.get_settings(username)
 
     def load_assets(self):
-        # Все файлы опциональны
         def load_sound(name: str):
             path = os.path.join(ASSETS_DIR, name)
             return arcade.load_sound(path) if os.path.exists(path) else None
@@ -38,7 +37,6 @@ class AudioSystem:
     def play_music_loop(self):
         if not self.music_sound:
             return
-        # Не запускаем второй раз
         if self.music_player and self.music_player.playing:
             return
         self.music_player = arcade.play_sound(self.music_sound, volume=self._effective_music_volume(), looping=True)
@@ -73,7 +71,6 @@ class AudioSystem:
     def toggle_mute(self):
         self.muted = 0 if self.muted else 1
         self.db.set_settings(self.username, self.music_volume, self.sfx_volume, self.muted)
-        # Если музыка играет — "перезапустим" с новой громкостью
         if self.music_sound:
             self.stop_music()
             self.play_music_loop()

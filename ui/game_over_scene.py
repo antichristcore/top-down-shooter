@@ -33,14 +33,12 @@ class GameOverScene(arcade.View):
         title = "VICTORY!" if self.victory else "GAME OVER"
         vbox.add(gui.UILabel(text=title, font_size=44, text_color=arcade.color.WHITE))
 
-        # Основные цифры
         vbox.add(gui.UILabel(text=f"Score: {self.score}", font_size=20, text_color=arcade.color.WHITE))
         vbox.add(gui.UILabel(text=f"Best:  {self.best_score}", font_size=20, text_color=arcade.color.WHITE))
 
         vbox.add(gui.UISpace(height=8))
         vbox.add(gui.UILabel(text="RESULTS", font_size=26, text_color=arcade.color.WHITE))
 
-        # Достаём результаты (все ключи безопасно)
         time_s = float(self.results.get("time_seconds", 0.0))
         waves_spawned = int(self.results.get("waves_spawned", 0))
         waves_total = int(self.results.get("waves_total", 0))
@@ -57,7 +55,6 @@ class GameOverScene(arcade.View):
         if shots > 0:
             accuracy = (hits / shots) * 100.0
 
-        # Красиво форматируем время
         mm = int(time_s // 60)
         ss = int(time_s % 60)
         time_str = f"{mm:02d}:{ss:02d}"
@@ -67,14 +64,12 @@ class GameOverScene(arcade.View):
         vbox.add(gui.UILabel(text=f"Kills: {kills_total}", font_size=16, text_color=arcade.color.WHITE))
         vbox.add(gui.UILabel(text=f"Shots: {shots}   Hits: {hits}   Acc: {accuracy:.1f}%", font_size=16, text_color=arcade.color.WHITE))
 
-        # Убийства по типам
         if len(kills_by_type) > 0:
             order = ["melee", "shooter", "charger", "tank"]
             parts = []
             for k in order:
                 if k in kills_by_type:
                     parts.append(f"{k}:{int(kills_by_type.get(k, 0))}")
-            # Остальные типы (если появятся)
             for k in kills_by_type.keys():
                 if k not in order:
                     parts.append(f"{k}:{int(kills_by_type.get(k, 0))}")
@@ -84,7 +79,6 @@ class GameOverScene(arcade.View):
         vbox.add(gui.UISpace(height=10))
 
         def replay():
-            # переигрываем тот же выбранный уровень
             self.window.start_game_with_level(self.window.selected_level_index)
 
         def go_level_select():

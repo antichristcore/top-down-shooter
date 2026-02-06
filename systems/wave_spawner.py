@@ -17,7 +17,6 @@ class WaveSpawner:
         self.finished_spawning = False
 
     def update(self, dt: float) -> bool:
-        """Возвращает True, если пора спавнить волну."""
         if self.finished_spawning:
             return False
         self._timer += dt
@@ -30,9 +29,7 @@ class WaveSpawner:
         return False
 
     def spawn_wave(self):
-        # Чем дальше уровень — тем больше врагов
         base_count = 4 + self.wave_index * 2
-        # Спаун по границам арены
         enemies = []
         for _ in range(base_count):
             side = random.choice(["left", "right", "bottom", "top"])

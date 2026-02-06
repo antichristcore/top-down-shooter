@@ -43,11 +43,9 @@ class LevelSelectScene(arcade.View):
         def start_campaign():
             self.window.start_campaign()
 
-        # ✅ кампания
         vbox.add(CallbackButton("Play All (Campaign)", 420, start_campaign))
         vbox.add(gui.UISpace(height=6))
 
-        # одиночные уровни
         for i, lvl in enumerate(self.levels):
             name = str(lvl.get("name", f"Level {i+1}"))
 
