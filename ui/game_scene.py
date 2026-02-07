@@ -554,6 +554,7 @@ class GameScene(arcade.View):
             ep = e.try_shoot(self.player.x, self.player.y)
             if ep is not None:
                 self.enemy_projectiles.append(ep)
+                self.audio.play_shot()
 
         prev_px = float(self.player.x)
         prev_py = float(self.player.y)
