@@ -1,1 +1,48 @@
+ТЕХНИЧЕСКОЕ ЗАДАНИЕ
+Top-Down Shooter 
 
+1. Общая архитектура проекта
+Структура каталогов:
+core/ — игровой цикл, менеджер сцен
+entities/ — игровые сущности
+systems/ — логика (коллизии, ИИ, урон)
+ui/ — интерфейс
+assets/ — ассеты
+data/ — конфиги и рекорды
+
+Ключевые классы:
+Game, SceneManager, Player, Enemy, Projectile,
+CollisionSystem, WaveSpawner, ScoreSystem
+
+
+2. Сцены
+MenuScene — старт, настройки звука
+GameScene — игровой процесс, HUD
+GameOverScene — результат, рекорд, кнопки
+
+3. Камера
+Следует за игроком, ограничена ареной
+
+4. Уровни
+Уровень 1: Песчаная арена (30x20, 3 волны, melee, shooter)
+Уровень 2: Лабиринт (40x25, 4 волны, melee, shooter, charger)
+Уровень 3: Кольцевая арена (50x30, 5 волн, melee, shooter, charger, tank)
+
+5. Конфигурация уровней
+Файл: data/levels.json
+Поля: id, name, arenaWidth, arenaHeight, waves,
+spawnIntervalSeconds, enemyTypes, enemyStats, winCondition
+
+6. Столкновения и урон
+Круг–круг, круг–AABB
+Снаряды наносят урон и уничтожаются
+Контактный урон врагов
+Knockback от попаданий
+
+7. Частицы и звук
+Частицы: explosion, hit
+Звук: shot.wav, hit.wav, explosion.wav, music.ogg
+
+8. Хранение данных
+SQLite .db рядом с исполняемым файлом
+Настройки и рекорды
