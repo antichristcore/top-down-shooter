@@ -7,7 +7,7 @@ import math
 from arcade.camera import Camera2D
 
 from core.settings import GameConfig
-from systems.aabb import AABB
+from systems.default_system import AABB
 from systems.collision_system import circle_circle_hit, circle_aabb_hit, soft_separate_circles
 from systems.score_system import ScoreSystem
 

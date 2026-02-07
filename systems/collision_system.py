@@ -1,5 +1,5 @@
 import math
-from systems.aabb import AABB
+from systems.default_system import AABB
 
 
 def circle_circle_hit(x1: float, y1: float, r1: float, x2: float, y2: float, r2: float) -> bool:
