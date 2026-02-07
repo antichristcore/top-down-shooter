@@ -21,9 +21,9 @@ class LevelSelectScene(arcade.View):
         self.ui = gui.UIManager()
         self.anchor = None
 
-        self.levels = self._load_levels()
+        self.levels = self.load_levels()
 
-    def _load_levels(self):
+    def load_levels(self):
         with open(LEVELS_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
 

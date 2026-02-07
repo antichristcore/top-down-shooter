@@ -32,7 +32,7 @@ class GameScene(arcade.View):
 
         self.cfg = GameConfig()
 
-        self.levels = self._load_levels()
+        self.levels = self.load_levels()
         self.level_index = int(level_index)
         if self.level_index < 0:
             self.level_index = 0
@@ -87,10 +87,10 @@ class GameScene(arcade.View):
         self.kills_total = 0
         self.kills_by_type = {}
 
-        self.walls = self._build_walls_for_level()
+        self.walls = self.build_walls_for_level()
         self.wall_objs = [Wall(r) for r in self.walls]
 
-        self._place_player_safe()
+        self.place_player_safe()
 
         self.mouse_world_x = float(self.player.x)
         self.mouse_world_y = float(self.player.y)
@@ -99,19 +99,18 @@ class GameScene(arcade.View):
         self._shooting = False
         self._level_intro_timer = 0.8
 
-    def _load_levels(self):
+    def load_levels(self):
         with open(LEVELS_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
 
 
-    def _screen_to_world(self, sx: float, sy: float):
+    def screen_to_world(self, sx: float, sy: float):
         try:
             cx, cy = self.camera.position
         except Exception:
             cx = self.player.x
             cy = self.player.y
 
-        zoom = 1.0
         try:
             zoom = float(self.camera.zoom)
         except Exception:
@@ -124,7 +123,7 @@ class GameScene(arcade.View):
         return wx, wy
 
 
-    def _push_circle_out_of_walls(self, x: float, y: float, r: float, walls):
+    def push_circle_out_of_walls(self, x: float, y: float, r: float, walls):
         moved_any = False
 
         for _ in range(8):
@@ -181,20 +180,20 @@ class GameScene(arcade.View):
 
         return x, y, moved_any
 
-    def _player_post_physics_fix(self, prev_x: float, prev_y: float):
-        x, y, _ = self._push_circle_out_of_walls(self.player.x, self.player.y, self.player.radius, self.walls)
+    def player_post_physics_fix(self, prev_x: float, prev_y: float):
+        x, y, _ = self.push_circle_out_of_walls(self.player.x, self.player.y, self.player.radius, self.walls)
         self.player.x = x
         self.player.y = y
 
         if any(circle_aabb_hit(self.player.x, self.player.y, self.player.radius, w) for w in self.walls):
             self.player.x = prev_x
             self.player.y = prev_y
-            x2, y2, _ = self._push_circle_out_of_walls(self.player.x, self.player.y, self.player.radius, self.walls)
+            x2, y2, _ = self.push_circle_out_of_walls(self.player.x, self.player.y, self.player.radius, self.walls)
             self.player.x = x2
             self.player.y = y2
 
 
-    def _fixed_maze_map(self):
+    def fixed_maze_map(self):
         return [
             "#############################",
             "#...........#...............#",
@@ -211,7 +210,7 @@ class GameScene(arcade.View):
             "#############################",
         ]
 
-    def _merge_wall_runs_in_row(self, grid_row, y, cell, x_offset, y_offset):
+    def merge_wall_runs_in_row(self, grid_row, y, cell, x_offset, y_offset):
         walls = []
         x = 0
         w = len(grid_row)
@@ -229,8 +228,8 @@ class GameScene(arcade.View):
             walls.append(AABB(cx, cy, run_len * cell, cell))
         return walls
 
-    def _build_fixed_maze_walls_and_floors(self, cell):
-        grid = self._fixed_maze_map()
+    def build_fixed_maze_walls_and_floors(self, cell):
+        grid = self.fixed_maze_map()
         rows = len(grid)
         cols = len(grid[0]) if rows > 0 else 0
 
@@ -243,7 +242,7 @@ class GameScene(arcade.View):
         floors = []
 
         for y in range(rows):
-            walls.extend(self._merge_wall_runs_in_row(grid[y], y, cell, x_offset, y_offset))
+            walls.extend(self.merge_wall_runs_in_row(grid[y], y, cell, x_offset, y_offset))
 
         for y in range(rows):
             row = grid[y]
@@ -259,7 +258,7 @@ class GameScene(arcade.View):
 
 
 
-    def _place_player_safe(self):
+    def place_player_safe(self):
         if self.maze_is_active and self.maze_floor_points:
             cx = self.arena_w_px / 2
             cy = self.arena_h_px / 2
@@ -286,7 +285,7 @@ class GameScene(arcade.View):
         self.player.y = self.arena_h_px / 2
 
 
-    def _build_walls_for_level(self):
+    def build_walls_for_level(self):
         walls = []
 
         self.maze_is_active = False
@@ -302,7 +301,7 @@ class GameScene(arcade.View):
         name = str(self.level_cfg.get("name", "")).lower()
 
         if "лабиринт" in name:
-            walls.extend(self._build_fixed_maze_walls_and_floors(self.tile))
+            walls.extend(self.build_fixed_maze_walls_and_floors(self.tile))
             return walls
 
         if "кольцевая" in name:
@@ -339,7 +338,7 @@ class GameScene(arcade.View):
         arcade.set_background_color(arcade.color.DARK_OLIVE_GREEN)
         self.audio.play_music_loop()
 
-    def _emit_hit_particles(self, x: float, y: float, count: int):
+    def emit_hit_particles(self, x: float, y: float, count: int):
         for _ in range(count):
             ang = random.uniform(0, math.tau)
             sp = random.uniform(120, 420)
@@ -352,7 +351,7 @@ class GameScene(arcade.View):
                 color=arcade.color.ORANGE
             ))
 
-    def _emit_explosion(self, x: float, y: float):
+    def emit_explosion(self, x: float, y: float):
         for _ in range(24):
             ang = random.uniform(0, math.tau)
             sp = random.uniform(180, 520)
@@ -366,7 +365,7 @@ class GameScene(arcade.View):
             ))
 
 
-    def _pick_spawn_in_maze(self, min_dist_from_player: float):
+    def pick_spawn_in_maze(self, min_dist_from_player: float):
         if not self.maze_floor_points:
             return (self.arena_w_px / 2, self.arena_h_px / 2)
         for _ in range(300):
@@ -378,7 +377,7 @@ class GameScene(arcade.View):
             return (x, y)
         return random.choice(self.maze_floor_points)
 
-    def _pick_spawn_in_ring(self, min_dist_from_player: float):
+    def pick_spawn_in_ring(self, min_dist_from_player: float):
         cx = self._ring_cx
         cy = self._ring_cy
         half_w = self._ring_w / 2
@@ -406,7 +405,7 @@ class GameScene(arcade.View):
 
         return (cx, cy)
 
-    def _spawn_wave(self):
+    def spawn_wave(self):
         wave_idx = self.waves_spawned
         base_count = 4 + wave_idx * 2
 
@@ -418,9 +417,9 @@ class GameScene(arcade.View):
             mass = {"tank": 3.0}.get(et, 1.6)
 
             if self.maze_is_active:
-                x, y = self._pick_spawn_in_maze(self.tile * 3.0)
+                x, y = self.pick_spawn_in_maze(self.tile * 3.0)
             elif self.ring_is_active:
-                x, y = self._pick_spawn_in_ring(self.tile * 3.0)
+                x, y = self.pick_spawn_in_ring(self.tile * 3.0)
             else:
                 x = random.uniform(self.tile * 2, self.arena_w_px - self.tile * 2)
                 y = random.uniform(self.tile * 2, self.arena_h_px - self.tile * 2)
@@ -441,9 +440,9 @@ class GameScene(arcade.View):
             if any(circle_aabb_hit(e.x, e.y, e.radius, r) for r in self.walls):
                 for _ in range(80):
                     if self.maze_is_active:
-                        sx, sy = self._pick_spawn_in_maze(self.tile * 2.0)
+                        sx, sy = self.pick_spawn_in_maze(self.tile * 2.0)
                     elif self.ring_is_active:
-                        sx, sy = self._pick_spawn_in_ring(self.tile * 2.0)
+                        sx, sy = self.pick_spawn_in_ring(self.tile * 2.0)
                     else:
                         sx = random.uniform(self.tile * 2, self.arena_w_px - self.tile * 2)
                         sy = random.uniform(self.tile * 2, self.arena_h_px - self.tile * 2)
@@ -455,7 +454,7 @@ class GameScene(arcade.View):
             self.enemies.append(e)
 
 
-    def _update_waves(self, dt: float):
+    def update_waves(self, dt: float):
         if len(self.enemies) > 0:
             self._waiting_next_wave = True
             self._just_cleared = False
@@ -473,13 +472,13 @@ class GameScene(arcade.View):
         if self._waiting_next_wave:
             self._wave_wait_timer -= dt
             if self._wave_wait_timer <= 0:
-                self._spawn_wave()
+                self.spawn_wave()
                 self.waves_spawned += 1
                 self._waiting_next_wave = False
                 self._just_cleared = False
 
 
-    def _clamp_camera(self):
+    def clamp_camera(self):
         half_w = self.window.width / 2
         half_h = self.window.height / 2
 
@@ -497,12 +496,12 @@ class GameScene(arcade.View):
 
         self.camera.position = (cx, cy)
 
-    def _is_win_condition_met(self) -> bool:
+    def is_win_condition_met(self) -> bool:
         if self.level_cfg.get("winCondition") != "kill_all_after_waves":
             return False
         return (self.waves_spawned >= self.waves_total) and (len(self.enemies) == 0)
 
-    def _collect_results(self):
+    def collect_results(self):
         return {
             "time_seconds": float(self.time_seconds),
             "waves_spawned": int(self.waves_spawned),
@@ -515,16 +514,16 @@ class GameScene(arcade.View):
             "hp_end": int(self.player.hp),
         }
 
-    def _go_game_over(self, victory: bool):
+    def go_game_over(self, victory: bool):
         best = self.db.try_set_best_score(self.username, self.score.score)
-        self.window.open_game_over(self.score.score, best, victory, self._collect_results())
+        self.window.open_game_over(self.score.score, best, victory, self.collect_results())
 
 
     def on_update(self, dt: float):
         self.time_seconds += dt
 
         if self.player.hp <= 0:
-            self._go_game_over(False)
+            self.go_game_over(False)
             return
 
         if self._level_intro_timer > 0:
@@ -532,7 +531,7 @@ class GameScene(arcade.View):
             if self._level_intro_timer < 0:
                 self._level_intro_timer = 0
 
-        self._update_waves(dt)
+        self.update_waves(dt)
 
         self.player.update(dt, self.walls, circle_aabb_hit)
 
@@ -576,7 +575,7 @@ class GameScene(arcade.View):
                     ax, ay, bx, by = soft_separate_circles(a.x, a.y, a.radius, b.x, b.y, b.radius)
                     a.x, a.y, b.x, b.y = ax, ay, bx, by
 
-        self._player_post_physics_fix(prev_px, prev_py)
+        self.player_post_physics_fix(prev_px, prev_py)
 
         # контактный урон
         self._contact_timer -= dt
@@ -584,7 +583,7 @@ class GameScene(arcade.View):
             for e in self.enemies:
                 if circle_circle_hit(self.player.x, self.player.y, self.player.radius, e.x, e.y, e.radius):
                     self.player.hp -= self.cfg.contact_damage
-                    self._emit_hit_particles(self.player.x, self.player.y, 12)
+                    self.emit_hit_particles(self.player.x, self.player.y, 12)
                     self.audio.play_hit()
                     self._contact_timer = self.cfg.contact_damage_interval
                     break
@@ -603,7 +602,7 @@ class GameScene(arcade.View):
 
                     e.hp -= b.damage
                     e.apply_knockback(b.x, b.y, b.knockback)
-                    self._emit_hit_particles(b.x, b.y, 10)
+                    self.emit_hit_particles(b.x, b.y, 10)
                     self.audio.play_hit()
                     b.alive = False
 
@@ -614,7 +613,7 @@ class GameScene(arcade.View):
                         self.kills_total += 1
                         self.kills_by_type[e.enemy_type] = int(self.kills_by_type.get(e.enemy_type, 0)) + 1
 
-                        self._emit_explosion(e.x, e.y)
+                        self.emit_explosion(e.x, e.y)
                         self.audio.play_explosion()
                     break
 
@@ -628,7 +627,7 @@ class GameScene(arcade.View):
 
             if circle_circle_hit(b.x, b.y, b.radius, self.player.x, self.player.y, self.player.radius):
                 self.player.hp -= b.damage
-                self._emit_hit_particles(b.x, b.y, 14)
+                self.emit_hit_particles(b.x, b.y, 14)
                 self.audio.play_hit()
                 b.alive = False
 
@@ -641,11 +640,11 @@ class GameScene(arcade.View):
             p.update(dt)
         self.particles = [p for p in self.particles if p.alive]
 
-        if self._is_win_condition_met():
-            self._go_game_over(True)
+        if self.is_win_condition_met():
+            self.go_game_over(True)
             return
 
-        self._clamp_camera()
+        self.clamp_camera()
 
     def on_draw(self):
         self.clear()
@@ -716,13 +715,13 @@ class GameScene(arcade.View):
             self.player.right = False
 
     def on_mouse_motion(self, x, y, dx, dy):
-        wx, wy = self._screen_to_world(float(x), float(y))
+        wx, wy = self.screen_to_world(float(x), float(y))
         self.mouse_world_x = wx
         self.mouse_world_y = wy
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == arcade.MOUSE_BUTTON_LEFT:
-            wx, wy = self._screen_to_world(float(x), float(y))
+            wx, wy = self.screen_to_world(float(x), float(y))
             self.mouse_world_x = wx
             self.mouse_world_y = wy
             self._shooting = True

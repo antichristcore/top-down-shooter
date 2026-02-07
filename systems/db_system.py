@@ -35,7 +35,7 @@ class DBSystem:
             con.commit()
 
     def get_or_create_default_user(self) -> str:
-        # Для простоты: один пользователь "player". Можно расширить вводом имени в меню.
+        # один пользователь "player"
         username = "player"
         self.ensure_user(username)
         return username

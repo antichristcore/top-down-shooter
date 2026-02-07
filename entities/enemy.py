@@ -96,7 +96,7 @@ class Enemy:
         bullet_speed = 420
         return Projectile(self.x, self.y, dx * bullet_speed, dy * bullet_speed, 4, 10, 240)
 
-    def _color(self):
+    def color(self):
         return {
             "melee": arcade.color.RED_ORANGE,
             "shooter": arcade.color.LIGHT_CORAL,
@@ -104,7 +104,7 @@ class Enemy:
             "tank": arcade.color.DARK_RED
         }.get(self.enemy_type, arcade.color.RED)
 
-    def _class_name(self):
+    def class_name(self):
         return {
             "melee": "Боец",
             "shooter": "Стрелок",
@@ -112,7 +112,7 @@ class Enemy:
             "tank": "Танк"
         }.get(self.enemy_type, self.enemy_type)
 
-    def _draw_hp_bar(self):
+    def draw_hp_bar(self):
         bar_width = self.radius * 2
         bar_height = 6
         bar_x = self.x - bar_width / 2
@@ -128,7 +128,7 @@ class Enemy:
 
     def draw(self):
         size = self.radius * 2
-        self.texture = arcade.make_soft_square_texture(64, self._color(), 255, 255)
+        self.texture = arcade.make_soft_square_texture(64, self.color(), 255, 255)
         arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.x, self.y, size, size))
-        arcade.draw_text(self._class_name(), self.x, self.y + self.radius + 10, arcade.color.WHITE, 12, anchor_x="center", anchor_y="center")
-        self._draw_hp_bar()
+        arcade.draw_text(self.class_name(), self.x, self.y + self.radius + 10, arcade.color.WHITE, 12, anchor_x="center", anchor_y="center")
+        self.draw_hp_bar()

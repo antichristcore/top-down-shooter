@@ -66,7 +66,7 @@ class Player:
             bullet_radius, bullet_damage, bullet_knockback
         )
 
-    def _draw_hp_bar(self):
+    def draw_hp_bar(self):
         bar_width = self.radius * 2
         bar_height = 6
         bar_x = self.x - bar_width / 2
@@ -84,4 +84,4 @@ class Player:
         size = self.radius * 2
         arcade.draw_texture_rect(self.texture, arcade.rect.XYWH(self.x, self.y, size, size))
         arcade.draw_text("Игрок", self.x, self.y + self.radius + 10, arcade.color.WHITE, 12, anchor_x="center", anchor_y="center")
-        self._draw_hp_bar()
+        self.draw_hp_bar()

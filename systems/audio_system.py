@@ -28,10 +28,10 @@ class AudioSystem:
         self.sfx_hit = load_sound("hit.mp3")
         self.sfx_explosion = load_sound("explosion.wav")
 
-    def _effective_music_volume(self) -> float:
+    def effective_music_volume(self) -> float:
         return 0.0 if self.muted else float(self.music_volume)
 
-    def _effective_sfx_volume(self) -> float:
+    def effective_sfx_volume(self) -> float:
         return 0.0 if self.muted else float(self.sfx_volume)
 
     def play_music_loop(self):
@@ -39,7 +39,7 @@ class AudioSystem:
             return
         if self.music_player and self.music_player.playing:
             return
-        self.music_player = arcade.play_sound(self.music_sound, volume=self._effective_music_volume())
+        self.music_player = arcade.play_sound(self.music_sound, volume=self.effective_music_volume())
 
     def stop_music(self):
         try:
@@ -50,15 +50,15 @@ class AudioSystem:
 
     def play_shot(self):
         if self.sfx_shot:
-            arcade.play_sound(self.sfx_shot, volume=self._effective_sfx_volume())
+            arcade.play_sound(self.sfx_shot, volume=self.effective_sfx_volume())
 
     def play_hit(self):
         if self.sfx_hit:
-            arcade.play_sound(self.sfx_hit, volume=self._effective_sfx_volume())
+            arcade.play_sound(self.sfx_hit, volume=self.effective_sfx_volume())
 
     def play_explosion(self):
         if self.sfx_explosion:
-            arcade.play_sound(self.sfx_explosion, volume=self._effective_sfx_volume())
+            arcade.play_sound(self.sfx_explosion, volume=self.effective_sfx_volume())
 
     def set_music_volume(self, v: float):
         self.music_volume = max(0.0, min(1.0, float(v)))

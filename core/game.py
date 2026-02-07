@@ -35,7 +35,7 @@ class Game(arcade.Window):
 
         # выбор уровня / режимы
         self.selected_level_index = 0
-        self.campaign_mode = False  # ✅ новый режим "все карты подряд"
+        self.campaign_mode = False
 
         # результаты для экрана Results
         self._pending_game_over_score = 0
@@ -72,7 +72,6 @@ class Game(arcade.Window):
         self.scene_manager.go("game")
 
     def start_campaign(self):
-        # ✅ пройти все уровни подряд
         self.campaign_mode = True
         self.selected_level_index = 0
         self.scene_manager.go("game")
