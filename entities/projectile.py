@@ -1,7 +1,6 @@
 import arcade
 
 class Projectile:
-    __slots__ = ("x","y","vx","vy","radius","damage","knockback","alive")
 
     def __init__(self, x, y, vx, vy, radius, damage, knockback):
         self.x = x

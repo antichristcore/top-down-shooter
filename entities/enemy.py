@@ -3,14 +3,6 @@ import math
 from entities.projectile import Projectile
 
 class Enemy:
-    __slots__ = (
-        "enemy_type","x","y","radius","speed","hp","max_hp","mass",
-        "shoot_interval","_shoot_timer",
-        "dash_cooldown","dash_time","_dash_cd","_dash_t",
-        "knock_vx","knock_vy",
-        "alive",
-        "texture"
-    )
 
     def __init__(self, enemy_type, x, y, radius, speed, hp, mass=1.5):
         self.enemy_type = enemy_type

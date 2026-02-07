@@ -3,12 +3,6 @@ import math
 from entities.projectile import Projectile
 
 class Player:
-    __slots__ = (
-        "x","y","radius","speed","hp","max_hp","mass",
-        "up","down","left","right",
-        "shoot_cooldown","_shoot_timer",
-        "texture"
-    )
 
     def __init__(self, x, y, radius, speed, hp, mass=1.0):
         self.x = x

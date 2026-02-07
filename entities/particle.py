@@ -1,7 +1,6 @@
 import arcade
 
 class Particle:
-    __slots__ = ("x","y","vx","vy","ttl","size","color","alive")
 
     def __init__(self, x, y, vx, vy, ttl, size, color):
         self.x = x
